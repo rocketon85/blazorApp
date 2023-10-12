@@ -1,0 +1,66 @@
+﻿@page "/fetchdata"
+@inject HttpClient Http
+@using blazorApp.Extensions;
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@*@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+*@
+@code {
+    private ApiInfoModel? apiInfo;
+    private CarViewModel[]? cars;
+    private OkResponseAuth? authResp;
+
+    protected override async Task OnInitializedAsync()
+    {
+        apiInfo = await Http.GetFromJsonAsync<ApiInfoModel>("api/info");
+        authResp = await Http.PostAsJsonAsync<OkResponseAuth, AuthRequest>("user/authenticate", new AuthRequest("admin", "admin123"));
+        cars = await Http.GetFromJsonAsync<CarViewModel[]>("car/cars", authResp.result.Token);
+
+        authResp = await Http.PostAsJsonAsync<OkResponseAuth, AuthRequest>("user/authenticate", new AuthRequest("admin", "admin123"));
+
+        var i = 0;
+        i++;
+        //var a = await Http.GetFromJsonAsync<ApiInfoModel>("api/info");
+    }
+
+    public record ApiInfoModel(string Author, string Version);
+    public record CarViewModel(int Id, string FuelName, string BrandName, string ModelName);
+    public record AuthRequest(string Username, string Password);
+
+
+    public record AuthRespModel(int UserId, string Token);
+    public record OkResponseAuth(int id, AuthRespModel result);
+
+}
