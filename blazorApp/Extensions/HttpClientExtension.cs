@@ -18,7 +18,7 @@ using System.Net.Http.Json;
 namespace blazorApp.Extensions
 {
 
-    public static class ServiceExtensions
+    public static class HttpClientExtension
     {
         public static async Task<T?> GetFromJsonAsync<T>(this HttpClient httpClient, string url, string token)
         {

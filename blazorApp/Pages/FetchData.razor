@@ -1,6 +1,10 @@
 ﻿@page "/fetchdata"
-@inject HttpClient Http
+@*@inject HttpClient Http*@
+@inject APIService apiService
+@inject SignalRService signalService
 @using blazorApp.Extensions;
+@using blazorApp.Models.API;
+@using blazorApp.Services;
 
 <PageTitle>Weather forecast</PageTitle>
 
@@ -40,27 +44,29 @@ else
 @code {
     private ApiInfoModel? apiInfo;
     private CarViewModel[]? cars;
-    private OkResponseAuth? authResp;
+    private AuthRespModel? authResp;
+    private CarViewModel? carResp;
+
+    //[Inject]
+    //private TodoService todoService { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        apiInfo = await Http.GetFromJsonAsync<ApiInfoModel>("api/info");
-        authResp = await Http.PostAsJsonAsync<OkResponseAuth, AuthRequest>("user/authenticate", new AuthRequest("admin", "admin123"));
-        cars = await Http.GetFromJsonAsync<CarViewModel[]>("car/cars", authResp.result.Token);
-
-        authResp = await Http.PostAsJsonAsync<OkResponseAuth, AuthRequest>("user/authenticate", new AuthRequest("admin", "admin123"));
-
+        signalService.messageRecived += (sender, message) =>
+        {
+            Console.WriteLine(message);
+        };
+        apiInfo = await apiService.Info(); // Http.GetFromJsonAsync<ApiInfoModel>("api/info");
+        authResp = await apiService.Authenticate(new AuthRequest("admin", "admin123")); // Http.PostAsJsonAsync<AuthRespModel, AuthRequest>("user/authenticate", new AuthRequest("admin", "admin123"));
+        carResp = await apiService.CarAdd(new CarCreateModel("Auto Nuevo", 1, 1, 1)); // Http.PostAsJsonAsync<CarViewModel, CarCreateModel>("car/add", new CarCreateModel("Auto Nuevo", 1, 1, 1), authResp?.Token ?? "");
+        cars = await apiService.CarList(); // Http.GetFromJsonAsync<CarViewModel[]>("car/cars", authResp?.Token ?? "");
         var i = 0;
         i++;
+
+        signalService.SendMessage("holaaa");
         //var a = await Http.GetFromJsonAsync<ApiInfoModel>("api/info");
     }
 
-    public record ApiInfoModel(string Author, string Version);
-    public record CarViewModel(int Id, string FuelName, string BrandName, string ModelName);
-    public record AuthRequest(string Username, string Password);
-
-
-    public record AuthRespModel(int UserId, string Token);
-    public record OkResponseAuth(int id, AuthRespModel result);
+   
 
 }
