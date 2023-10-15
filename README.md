@@ -15,3 +15,5 @@ This repository serves as an illustrative example of a .NET Core Blazor WebAssem
 - **JWT Authorization:** Implements JWT-based authentication and authorization to secure the application.
 
 - **API Integration:** Communicates with external APIs, showcasing data retrieval and integration capabilities.
+
+- **SignalR:** Utilizes SignalR for Real-Time Bidirectional Communication.
