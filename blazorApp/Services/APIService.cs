@@ -22,7 +22,7 @@ namespace blazorApp.Services
 
         public async Task<AuthRespModel?> Authenticate(AuthRequest auth)
         {
-            var resp = await httpClient.PostAsJsonAsync<AuthRespModel, AuthRequest>("user/authenticate", auth);
+            var resp = await httpClient.PostAsJsonAsync<AuthRespModel, AuthRequest>("api/v2/user/authenticate", auth);
             token = resp?.Token ?? "";
 
             return resp;
@@ -30,12 +30,12 @@ namespace blazorApp.Services
 
         public async Task<CarViewModel?> CarAdd(CarCreateModel req)
         {
-            return await httpClient.PostAsJsonAsync<CarViewModel, CarCreateModel>("car/add", req, token);
+            return await httpClient.PostAsJsonAsync<CarViewModel, CarCreateModel>("api/v1/car/add", req, token);
         }
 
         public async Task<CarViewModel[]?> CarList()
         {
-            return await httpClient.GetFromJsonAsync<CarViewModel[]>("car/cars", token);
+            return await httpClient.GetFromJsonAsync<CarViewModel[]>("api/v1/car/cars", token);
         }
     }
 }
