@@ -35,7 +35,7 @@ namespace blazorApp.Services
 
         public async Task<CarViewModel[]?> CarList()
         {
-            return await httpClient.GetFromJsonAsync<CarViewModel[]>("api/v1/car/cars", token);
+            return await httpClient.GetFromJsonAsync<CarViewModel[]>("api/v2/car/cars", token);
         }
     }
 }

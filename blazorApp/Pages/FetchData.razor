@@ -1,18 +1,17 @@
 ﻿@page "/fetchdata"
-@*@inject HttpClient Http*@
 @inject APIService apiService
 @inject SignalRService signalService
 @using blazorApp.Extensions;
 @using blazorApp.Models.API;
 @using blazorApp.Services;
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Cars List</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Cars List</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@*@if (forecasts == null)
+@if (cars == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -21,26 +20,26 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
+                <th>Id</th>
+                <th>Brand</th>
+                <th>Model</th>
+                <th>Fuel</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var forecast in forecasts)
+            @foreach (var car in cars)
             {
                 <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
+                    <td>@car.Id</td>
+                    <td>@car.BrandName</td>
+                    <td>@car.ModelName</td>
+                    <td>@car.FuelName</td>
                 </tr>
             }
         </tbody>
     </table>
 }
-*@
+
 @code {
     private ApiInfoModel? apiInfo;
     private CarViewModel[]? cars;
@@ -56,15 +55,14 @@ else
         {
             Console.WriteLine(message);
         };
-        apiInfo = await apiService.Info(); // Http.GetFromJsonAsync<ApiInfoModel>("api/info");
-        authResp = await apiService.Authenticate(new AuthRequest("admin", "admin123")); // Http.PostAsJsonAsync<AuthRespModel, AuthRequest>("user/authenticate", new AuthRequest("admin", "admin123"));
-        carResp = await apiService.CarAdd(new CarCreateModel("Auto Nuevo", 1, 1, 1)); // Http.PostAsJsonAsync<CarViewModel, CarCreateModel>("car/add", new CarCreateModel("Auto Nuevo", 1, 1, 1), authResp?.Token ?? "");
-        cars = await apiService.CarList(); // Http.GetFromJsonAsync<CarViewModel[]>("car/cars", authResp?.Token ?? "");
+        apiInfo = await apiService.Info();
+        authResp = await apiService.Authenticate(new AuthRequest("admin", "admin123"));
+        carResp = await apiService.CarAdd(new CarCreateModel("Auto Nuevo", 1, 1, 1));
+        cars = await apiService.CarList();
         var i = 0;
         i++;
 
         signalService.SendMessage("holaaa");
-        //var a = await Http.GetFromJsonAsync<ApiInfoModel>("api/info");
     }
 
    
